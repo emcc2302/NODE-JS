@@ -1,4 +1,4 @@
-// const http=require('http');
+ const http=require('http');
 
 // function requestListener (req,res){
 //     console.log(req);
@@ -8,7 +8,8 @@
 
 
 //same code using anonymous function ,is a function without a name.
-const http=require('http');
-http.createServer((req , res)=>{
+
+const server=http.createServer((req , res)=>{
     console.log(req);
 });
+server.listen(3001);
