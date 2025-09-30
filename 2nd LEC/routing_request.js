@@ -1,40 +1,71 @@
- const http=require('http');
+//  const http=require('http');
 
-const server=http.createServer((req , res)=>{
-    console.log(req.url , req.method , req.headers);
+// const server=http.createServer((req , res)=>{
+//     console.log(req.url , req.method , req.headers);
 
     
    
-   if(req.url==='/'){
-     res.setHeader('Content-Type', 'text/html');
-    res.write('<html>');
-    res.write('<h1>Welcome to Home Page</h1>')
-    res.write('</html>');
-    return res.end(); //always use return either server will kill in the if block is will not go to the next block
-   }
+//    if(req.url==='/'){
+//      res.setHeader('Content-Type', 'text/html');
+//     res.write('<html>');
+//     res.write('<h1>Welcome to Home Page</h1>')
+//     res.write('</html>');
+//     return res.end(); //always use return either server will kill in the if block is will not go to the next block
+//    }
 
-   else if(req.url.toLowerCase()==='/products'){
+//    else if(req.url.toLowerCase()==='/products'){
 
-     res.setHeader('Content-Type', 'text/html');
-    res.write('<html>');
-     res.write('<h1>Checkout our Products</h1>')
-    res.write('</html>');
-    return res.end();
-   }
-   res.setHeader('Content-Type', 'text/html');
-    res.write('<html>');
-    res.write('<head><title>Soriful</title></head>');
-    res.write('<body>Hello Soriful</body>');
-    res.write('</html>');
-    res.end();
+//      res.setHeader('Content-Type', 'text/html');
+//     res.write('<html>');
+//      res.write('<h1>Checkout our Products</h1>')
+//     res.write('</html>');
+//     return res.end();
+//    }
+//    res.setHeader('Content-Type', 'text/html');
+//     res.write('<html>');
+//     res.write('<head><title>Soriful</title></head>');
+//     res.write('<body>Hello Soriful</body>');
+//     res.write('</html>');
+//     res.end();
     
-});
+// });
 
 
 
  
 
-const PORT=3001;
-server.listen( PORT,()=>{
-    console.log(`Server running at http://localhost:${PORT}`);
-});
+// const PORT=3001;
+// server.listen( PORT,()=>{
+//     console.log(`Server running at http://localhost:${PORT}`);
+// });
+
+
+// better way write common code in the top,like this
+ const http = require("http");
+
+ const server = http.createServer((req, res) => {
+   console.log(req.url, req.method, req.headers);
+
+   res.setHeader("Content-Type", "text/html");
+   res.write("<html>");
+
+   if (req.url === "/") {
+     res.write("<h1>Welcome to Home Page</h1>");
+
+     return res.end(); //always use return either server will kill in the if block is will not go to the next block
+   } else if (req.url.toLowerCase() === "/products") {
+     res.write("<h1>Checkout our Products</h1>");
+     return res.end();
+   }
+
+   res.write("<body>Hello Soriful</body>");
+   res.write("</html>");
+
+   res.end();
+ });
+ 
+
+ const PORT = 3001;
+ server.listen(PORT, () => {
+   console.log(`Server running at http://localhost:${PORT}`);
+ });
