@@ -27,7 +27,7 @@ const server = http.createServer((req, res) => {
     
     fs.writeFileSync('user.txt', 'Soriful IslaM sK'); //create a file called user.txt and sync the value Soriful IslaM sK
     res.statusCode = 302;//code for redirecting page to another page
-    res.setHeaders('Location','/');//Location "/" means page will redirect to home page
+    res.setHeader('Location','/');//Location "/" means page will redirect to home page
 }
 
 res.setHeader('Content-Type', 'text/html');
