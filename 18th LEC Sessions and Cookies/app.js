@@ -1,65 +1,77 @@
-// Core Module
+// Core Modules
+require('dotenv').config();
 const path = require('path');
 
-// External Module
+// External Modules
 const express = require('express');
 const session = require('express-session');
+const mongoose = require('mongoose');
 const MongoDBStore = require('connect-mongodb-session')(session);
-const DB_PATH = "mongodb+srv://soriful:soriful@soriful.jd5jrlu.mongodb.net/airbnb?retryWrites=true&w=majority&appName=soriful";
 
-//Local Module
-const storeRouter = require("./routes/storeRouter")
-const hostRouter = require("./routes/hostRouter")
-const authRouter = require("./routes/authRouter")
-const rootDir = require("./utils/pathUtil");
-const errorsController = require("./controllers/errors");
-const { default: mongoose } = require('mongoose');
+// Local Modules
+const storeRouter = require('./routes/storeRouter');
+const hostRouter = require('./routes/hostRouter');
+const authRouter = require('./routes/authRouter');
+const rootDir = require('./utils/pathUtil');
+const errorsController = require('./controllers/errors');
 
+// Initialize express
 const app = express();
 
+// EJS setup
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
+// MongoDB session store
 const store = new MongoDBStore({
-  uri: DB_PATH,
-  collection: 'sessions'
+  uri: process.env.DB_PATH, 
+  collection: 'sessions',
 });
 
-app.use(express.urlencoded());
-app.use(session({
-  secret: "KnowledgeGate AI with Complete Coding",
-  resave: false,
-  saveUninitialized: true,
-  store
-}));
+// Middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(
+  session({
+    secret: 'soriful',
+    resave: false,
+    saveUninitialized: false,
+    store,
+  })
+);
 
 app.use((req, res, next) => {
-  req.isLoggedIn = req.session.isLoggedIn
+  req.isLoggedIn = req.session.isLoggedIn;
   next();
-})
+});
 
-app.use(authRouter)
+// Routers
+app.use(authRouter);
 app.use(storeRouter);
-app.use("/host", (req, res, next) => {
+app.use('/host', (req, res, next) => {
   if (req.isLoggedIn) {
     next();
   } else {
-    res.redirect("/login");
+    res.redirect('/login');
   }
 });
-app.use("/host", hostRouter);
+app.use('/host', hostRouter);
 
-app.use(express.static(path.join(rootDir, 'public')))
+// Static files
+app.use(express.static(path.join(rootDir, 'public')));
 
+// Error controller
 app.use(errorsController.pageNotFound);
 
+// Server + Database
 const PORT = 3000;
-
-mongoose.connect(DB_PATH).then(() => {
-  console.log('Connected to Mongo');
-  app.listen(PORT, () => {
-    console.log(`Server running on address http://localhost:${PORT}`);
+mongoose
+  .connect(process.env.DB_PATH)
+  .then(() => {
+    console.log('✅ Connected to MongoDB');
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running at http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('❌ Error while connecting to MongoDB:', err);
   });
-}).catch(err => {
-  console.log('Error while connecting to Mongo: ', err);
-});
